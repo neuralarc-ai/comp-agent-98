@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Building2, Shield, Users, Clock, CheckCircle, Zap, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -138,7 +138,13 @@ const AnalysisPage = () => {
   const [progress, setProgress] = useState(0);
   const [currentPhase, setCurrentPhase] = useState("Initializing Analysis");
   const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  // Auto-scroll to bottom when new messages are added
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   useEffect(() => {
     // Simulate real-time conversation
@@ -255,8 +261,8 @@ const AnalysisPage = () => {
           </div>
 
           {/* Conversation Display */}
-          <div className="lg:col-span-3">
-            <div className="bg-card rounded-lg shadow-soft border border-border h-[600px] flex flex-col">
+          <div className="lg:col-span-3 flex flex-col">
+            <div className="bg-card rounded-lg shadow-soft border border-border flex flex-col flex-1">
               <div className="p-4 border-b border-border">
                 <h3 className="font-semibold text-foreground">Agent Collaboration</h3>
                 <p className="text-sm text-muted-foreground">Real-time multi-agent analysis in progress</p>
@@ -301,6 +307,9 @@ const AnalysisPage = () => {
                     <span>{activeAgents.join(', ')} analyzing...</span>
                   </div>
                 )}
+                
+                {/* Invisible element for auto-scroll anchor */}
+                <div ref={messagesEndRef} />
               </div>
             </div>
           </div>
